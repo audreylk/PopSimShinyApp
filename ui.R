@@ -44,11 +44,6 @@ shinyUI(fluidPage(
                        sidebarLayout(
                          sidebarPanel(h3("Population parameters")),
                          mainPanel(h3("Population trajectories"))
-                       )),
-              tabPanel("Predator-prey",
-                       sidebarLayout(
-                         sidebarPanel(h3("Population parameters")),
-                         mainPanel(h3("Population trajectory"))
                        ))
   )
 ))
