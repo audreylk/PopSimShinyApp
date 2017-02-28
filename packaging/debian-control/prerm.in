@@ -1,9 +1,0 @@
-#!/bin/sh
-
-# errors shouldn't cause script to exit
-set +e
-
-sudo initctl stop shiny-server 2>/dev/null
-
-# clear error termination state
-set -e
