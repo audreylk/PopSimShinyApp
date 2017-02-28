@@ -41,11 +41,57 @@ shinyUI(fluidPage(
                        )
               ),
               tabPanel("Single population growth",
-                       sidebarLayout(
-                         sidebarPanel(h3("Population parameters")),
-                         mainPanel(h3("Population trajectories"))
-                       ))
+                       tabsetPanel(type='tabs',
+                                   tabPanel("Density-Independent Growth (continuous exponential)",
+                                            h3("Population Parameters"),
+                                            fluidRow(
+                                              column(3, wellPanel(
+                                                h4("Population 1:"),
+                                                numericInput("DIG.pop1.n", label=HTML(paste("Starting population size, N", paste(tags$sub(1), "(0)", sep=""), sep="")), 10),
+                                                numericInput("DIG.pop1.r", label=HTML(paste("Intrinsic growth rate, r", paste(tags$sub(1), ":", sep=""), sep="")), .1)
+                                                )),
+                                              column(2, wellPanel(
+                                                h4("Run time:"),
+                                                numericInput("DIG.time", label="Number of generations to run:", 20)),
+                                                submitButton("Update graphs")
+                                              )),
+                                            h3("Population Trajectories"),
+                                            fluidRow(
+                                              column(6, h4("Population size versus time"), plotOutput("DIG.plot.NvT")),
+                                              column(6, h4("Population growth rate versus population size"), plotOutput("DIG.plot.dNdTvN"))
+                                            ),
+                                            fluidRow(
+                                              column(6, h4("Log population size versus time"), plotOutput("DIG.plot.logNvT")),
+                                              column(6, h4("Population size-corrected growth rate versus population size"), plotOutput("DIG.plot.dNNdTvN"))
+                                            )
+                                            ),
+                                   tabPanel("Density-Dependent Growth (continuous logistic)",
+                                            h3("Population Parameters"),
+                                            fluidRow(
+                                              column(3, wellPanel(
+                                                h4("Population 1:"),
+                                                numericInput("DDG.pop1.n", label=HTML(paste("Starting population size, N", paste(tags$sub(1), "(0):", sep=""), sep="")), 10),
+                                                numericInput("DDG.pop1.r", label=HTML(paste("Intrinsic growth rate, r", paste(tags$sub(1), ":", sep=""), sep="")), .1),
+                                                numericInput("DDG.pop1.K", label=HTML(paste("Carrying capacity, K", paste(tags$sub(1), ":", sep=""), sep="")), 250)
+                                              )),
+                                              column(2, wellPanel(
+                                                h4("Run time:"),
+                                                numericInput("DDG.time", label="Number of generations to run:", 100)),
+                                                submitButton("Update graphs")
+                                              )),
+                                            h3("Population Trajectories"),
+                                            fluidRow(
+                                              column(6, h4("Population size versus time"), plotOutput("DDG.plot.NvT")),
+                                              column(6, h4("Population growth rate versus population size"), plotOutput("DDG.plot.dNdTvN"))
+                                            ),
+                                            fluidRow(
+                                              column(6, h4("Log population size versus time"), plotOutput("DDG.plot.logNvT")),
+                                              column(6, h4("Population size-corrected growth rate versus population size"), plotOutput("DDG.plot.dNNdTvN"))
+                                            )
+                                            )
+                                   ) 
+                       )
+              )
   )
-))
-
+)
 
