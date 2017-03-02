@@ -1,0 +1,14 @@
+- Package: deSolve
+  Repository: CRAN
+  Version: '1.14'
+- Package: ggplot2
+  GithubUsername: hadley
+  GithubRepo: ggplot2
+  GithubRef: master
+  GithubSHA1: e36e71a3bee6a34e29b74231a766d4e67a0d2942
+- Package: tidyverse
+  Repository: CRAN
+  Version: 1.0.0
+- Package: shiny
+  Repository: CRAN
+  Version: 0.14.2
