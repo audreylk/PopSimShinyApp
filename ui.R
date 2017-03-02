@@ -50,11 +50,20 @@ shinyUI(fluidPage(
                                                 numericInput("DIG.pop1.n", label=HTML(paste("Starting population size, N", paste(tags$sub(1), "(0)", sep=""), sep="")), 10),
                                                 numericInput("DIG.pop1.r", label=HTML(paste("Intrinsic growth rate, r", paste(tags$sub(1), ":", sep=""), sep="")), .1)
                                                 )),
-                                              column(2, wellPanel(
-                                                h4("Run time:"),
-                                                numericInput("DIG.time", label="Number of generations to run:", 20)),
-                                                submitButton("Update graphs")
+                                              column(3, wellPanel(
+                                                h4("Population 2:"),
+                                                numericInput("DIG.pop2.n", label=HTML(paste("Starting population size, N", paste(tags$sub(2), "(0)", sep=""), sep="")), 10),
+                                                numericInput("DIG.pop2.r", label=HTML(paste("Intrinsic growth rate, r", paste(tags$sub(2), ":", sep=""), sep="")), .1)
                                               )),
+                                              column(3, wellPanel(
+                                                h4("Run time:"),
+                                                numericInput("DIG.time", label="Number of generations to run:", 20),
+                                                h4("Populations to graph:"),
+                                                checkboxInput("DIG.pop1.check", label="Population 1", value=TRUE),
+                                                checkboxInput("DIG.pop2.check", label="Population 2", value=FALSE),
+                                                submitButton("Update graphs")
+                                              ))
+                                            ),
                                             h3("Population Trajectories"),
                                             fluidRow(
                                               column(6, h4("Population size versus time"), plotOutput("DIG.plot.NvT")),
@@ -74,11 +83,21 @@ shinyUI(fluidPage(
                                                 numericInput("DDG.pop1.r", label=HTML(paste("Intrinsic growth rate, r", paste(tags$sub(1), ":", sep=""), sep="")), .1),
                                                 numericInput("DDG.pop1.K", label=HTML(paste("Carrying capacity, K", paste(tags$sub(1), ":", sep=""), sep="")), 250)
                                               )),
-                                              column(2, wellPanel(
-                                                h4("Run time:"),
-                                                numericInput("DDG.time", label="Number of generations to run:", 100)),
-                                                submitButton("Update graphs")
+                                              column(3, wellPanel(
+                                                h4("Population 2:"),
+                                                numericInput("DDG.pop2.n", label=HTML(paste("Starting population size, N", paste(tags$sub(2), "(0):", sep=""), sep="")), 10),
+                                                numericInput("DDG.pop2.r", label=HTML(paste("Intrinsic growth rate, r", paste(tags$sub(2), ":", sep=""), sep="")), .1),
+                                                numericInput("DDG.pop2.K", label=HTML(paste("Carrying capacity, K", paste(tags$sub(2), ":", sep=""), sep="")), 250)
                                               )),
+                                              column(3, wellPanel(
+                                                h4("Run time:"),
+                                                numericInput("DDG.time", label="Number of generations to run:", 100),
+                                                h4("Populations to graph:"),
+                                                checkboxInput("DDG.pop1.check", label="Population 1", value = TRUE),
+                                                checkboxInput("DDG.pop2.check", label="Population 2", value = FALSE),
+                                                submitButton("Update graphs")
+                                              ))
+                                            ),
                                             h3("Population Trajectories"),
                                             fluidRow(
                                               column(6, h4("Population size versus time"), plotOutput("DDG.plot.NvT")),

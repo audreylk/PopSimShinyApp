@@ -62,123 +62,243 @@ shinyServer(function(input, output) {
       labs(x="Population 1 size", y="Population 2 size")
   })
   output$DIG.plot.NvT <- renderPlot({
-    DIGmod.pop1 <- function(Time, State, Pars){
+    DIGmod <- function(Time, State, Pars){
       with(as.list(c(State, Pars)), {
         dNdt = N*r
         return(list(dNdt))
       })
     }
-    DIGpars.1 <- c(r = input$DIG.pop1.r)
-    DIGstate.1 <- c(N = input$DIG.pop1.n)
-    DIGtime <- seq(0, input$DIG.time, by = 1)
-    DIGdf.1 <- as.data.frame(ode(func = DIGmod.pop1, y = DIGstate.1, parms = DIGpars.1, times = DIGtime))
-    ggplot(DIGdf.1, aes(x=time, y=N)) + geom_path(aes(colour="Population 1")) + 
-      scale_colour_manual(values=colourblind_custom, name = NULL) +
-      labs(x = "Time (generations)", y = "Population size (# individuals)")
+    DIG.NvTplot <- ggplot()
+    if(input$DIG.pop1.check == TRUE){
+      DIGpars.1 <- c(r = input$DIG.pop1.r)
+      DIGstate.1 <- c(N = input$DIG.pop1.n)
+      DIGtime <- seq(0, input$DIG.time, by = 1)
+      DIG.NvTplot <- DIG.NvTplot + 
+        geom_path(data = as.data.frame(ode(func = DIGmod, y = DIGstate.1, parms = DIGpars.1, times = DIGtime)),
+                  aes(x=time, y=N, colour="Population 1")) + 
+        scale_colour_manual(values=colourblind_custom, name = NULL) +
+        labs(x = "Time (generations)", y = "Population size (# individuals)")
+    }
+    if(input$DIG.pop2.check == TRUE){
+      DIGpars.2 <- c(r = input$DIG.pop2.r)
+      DIGstate.2 <- c(N = input$DIG.pop2.n)
+      DIGtime <- seq(0, input$DIG.time, by = 1)
+      DIG.NvTplot <- DIG.NvTplot +
+        geom_path(data = as.data.frame(ode(func = DIGmod, y = DIGstate.2, parms = DIGpars.2, times = DIGtime)),
+                  aes(x=time, y=N, colour="Population 2")) +
+        scale_colour_manual(values=colourblind_custom, name = NULL) +
+        labs(x = "Time (generations)", y = "Population size (# individuals)")
+    }
+    DIG.NvTplot
   })
   output$DIG.plot.dNdTvN <- renderPlot({
-    DIGmod.pop1 <- function(Time, State, Pars){
+    DIGmod <- function(Time, State, Pars){
       with(as.list(c(State, Pars)), {
         dNdt = N*r
         return(list(dNdt, State))
       })
     }
-    DIGpars.1 <- c(r = input$DIG.pop1.r)
-    DIGstate.1 <- c(N = input$DIG.pop1.n)
-    DIGtime <- seq(0, input$DIG.time, by = 1)
-    DIGdf.1 <- as.data.frame(ode(func = DIGmod.pop1, y = DIGstate.1, parms = DIGpars.1, times = DIGtime))
-    ggplot(DIGdf.1, aes(x = N, y = N*input$DIG.pop1.r)) + geom_path(aes(colour="Population 1")) +
-      scale_colour_manual(values=colourblind_custom, name=NULL) +
-      labs(x="Population size (# individuals)", y="Population growth rate (# individuals/generation)")
+    DIG.dNdTvNplot <- ggplot()
+    if(input$DIG.pop1.check == TRUE){
+      DIGpars.1 <- c(r = input$DIG.pop1.r)
+      DIGstate.1 <- c(N = input$DIG.pop1.n)
+      DIGtime <- seq(0, input$DIG.time, by = 1)
+      DIG.dNdTvNplot <- DIG.dNdTvNplot + 
+        geom_path(data = as.data.frame(ode(func = DIGmod, y = DIGstate.1, parms = DIGpars.1, times = DIGtime)),
+                  aes(x = N, y = N*input$DIG.pop1.r, colour="Population 1")) +
+        scale_colour_manual(values=colourblind_custom, name=NULL) +
+        labs(x="Population size (# individuals)", y="Population growth rate (# individuals/generation)")
+    }
+    if(input$DIG.pop2.check == TRUE){
+      DIGpars.2 <- c(r = input$DIG.pop2.r)
+      DIGstate.2 <- c(N = input$DIG.pop2.n)
+      DIGtime <- seq(0, input$DIG.time, by = 1)
+      DIG.dNdTvNplot <- DIG.dNdTvNplot + 
+        geom_path(data = as.data.frame(ode(func = DIGmod, y = DIGstate.2, parms = DIGpars.2, times = DIGtime)),
+                  aes(x = N, y = N*input$DIG.pop2.r, colour="Population 2")) +
+        scale_colour_manual(values=colourblind_custom, name=NULL) +
+        labs(x="Population size (# individuals)", y="Population growth rate (# individuals/generation)")
+    }
+    DIG.dNdTvNplot
   })
   output$DIG.plot.logNvT <- renderPlot({
-    DIGmod.pop1 <- function(Time, State, Pars){
+    DIGmod <- function(Time, State, Pars){
       with(as.list(c(State, Pars)), {
         dNdt = N*r
         return(list(dNdt))
       })
     }
-    DIGpars.1 <- c(r = input$DIG.pop1.r)
-    DIGstate.1 <- c(N = input$DIG.pop1.n)
-    DIGtime <- seq(0, input$DIG.time, by = 1)
-    DIGdf.1 <- as.data.frame(ode(func = DIGmod.pop1, y = DIGstate.1, parms = DIGpars.1, times = DIGtime))
-    ggplot(DIGdf.1, aes(y = log(N), x = time)) + geom_path(aes(colour="Population 1")) +
-      scale_colour_manual(values = colourblind_custom, name=NULL) +
-      labs(x = "Time (generations)", y = "Log population size")
+    DIG.logNvTplot <- ggplot()
+    if(input$DIG.pop1.check == TRUE){
+      DIGpars.1 <- c(r = input$DIG.pop1.r)
+      DIGstate.1 <- c(N = input$DIG.pop1.n)
+      DIGtime <- seq(0, input$DIG.time, by = 1)
+      DIG.logNvTplot <- DIG.logNvTplot + 
+        geom_path(data = as.data.frame(ode(func = DIGmod, y = DIGstate.1, parms = DIGpars.1, times = DIGtime)),
+                  aes(y = log(N), x = time, colour="Population 1")) +
+        scale_colour_manual(values = colourblind_custom, name=NULL) +
+        labs(x = "Time (generations)", y = "Log population size")
+    }
+    if(input$DIG.pop2.check == TRUE){
+      DIGpars.2 <- c(r = input$DIG.pop2.r)
+      DIGstate.2 <- c(N = input$DIG.pop2.n)
+      DIGtime <- seq(0, input$DIG.time, by = 1)
+      DIG.logNvTplot <- DIG.logNvTplot + 
+        geom_path(data = as.data.frame(ode(func = DIGmod, y = DIGstate.2, parms = DIGpars.2, times = DIGtime)),
+                  aes(y = log(N), x = time, colour="Population 2")) +
+        scale_colour_manual(values = colourblind_custom, name=NULL) +
+        labs(x = "Time (generations)", y = "Log population size")
+    }
+    DIG.logNvTplot
   })
   output$DIG.plot.dNNdTvN <- renderPlot({
-    DIGmod.pop1 <- function(Time, State, Pars){
+    DIGmod<- function(Time, State, Pars){
       with(as.list(c(State, Pars)), {
         dNdt = N*r
         return(list(dNdt))
       })
     }
-    DIGpars.1 <- c(r = input$DIG.pop1.r)
-    DIGstate.1 <- c(N = input$DIG.pop1.n)
-    DIGtime <- seq(0, input$DIG.time, by = 1)
-    DIGdf.1 <- as.data.frame(ode(func = DIGmod.pop1, y = DIGstate.1, parms = DIGpars.1, times = DIGtime))
-    ggplot(DIGdf.1, aes(x = N, y = input$DIG.pop1.r)) + geom_path(aes(colour="Population 1")) +
-      scale_colour_manual(values=colourblind_custom, name=NULL) +
-      labs(x = "Population size (# individuals)", y = "Population size-corrected growth rate\n(# individuals/generation)")
+    DIG.dNNdTvNplot <- ggplot()
+    if(input$DIG.pop1.check == TRUE){
+      DIGpars.1 <- c(r = input$DIG.pop1.r)
+      DIGstate.1 <- c(N = input$DIG.pop1.n)
+      DIGtime <- seq(0, input$DIG.time, by = 1)
+      DIG.dNNdTvNplot <- DIG.dNNdTvNplot +
+        geom_path(data=as.data.frame(ode(func = DIGmod, y = DIGstate.1, parms = DIGpars.1, times = DIGtime)),
+                  aes(x = N, y = input$DIG.pop1.r, colour="Population 1")) +
+        scale_colour_manual(values=colourblind_custom, name=NULL) +
+        labs(x = "Population size (# individuals)", y = "Population size-corrected growth rate\n(# individuals/generation)")
+    }
+    if(input$DIG.pop2.check == TRUE){
+      DIGpars.2 <- c(r = input$DIG.pop2.r)
+      DIGstate.2 <- c(N = input$DIG.pop2.n)
+      DIGtime <- seq(0, input$DIG.time, by = 1)
+      DIG.dNNdTvNplot <- DIG.dNNdTvNplot +
+        geom_path(data=as.data.frame(ode(func = DIGmod, y = DIGstate.2, parms = DIGpars.2, times = DIGtime)),
+                  aes(x = N, y = input$DIG.pop2.r, colour="Population 2")) +
+        scale_colour_manual(values=colourblind_custom, name=NULL) +
+        labs(x = "Population size (# individuals)", y = "Population size-corrected growth rate\n(# individuals/generation)")
+    }
+    DIG.dNNdTvNplot
   })
   output$DDG.plot.NvT <- renderPlot({
-    DDGmod.pop1 <- function(Time, State, Pars){
+    DDGmod <- function(Time, State, Pars){
       with(as.list(c(State, Pars)), {
         dNdt = r * N *((K - N)/K)
         return(list(dNdt))
       })
     }
-    DDGpars.1 <- c(r = input$DDG.pop1.r, K = input$DDG.pop1.K)
-    DDGstate.1 <- c(N = input$DDG.pop1.n)
-    DDGtime <- seq(0, input$DDG.time, by = 1)
-    DDGdf.1 <- as.data.frame(ode(func = DDGmod.pop1, y = DDGstate.1, parms = DDGpars.1, times = DDGtime))
-    ggplot(DDGdf.1, aes(y = N, x = time)) + geom_path(aes(colour="Population 1")) +
-      scale_colour_manual(values=colourblind_custom, name=NULL) +
-      labs(x = "Time (generations)", y = "Population size (# individuals)")
+    DDG.NvTplot <- ggplot()
+    if(input$DDG.pop1.check == TRUE){
+      DDGpars.1 <- c(r = input$DDG.pop1.r, K = input$DDG.pop1.K)
+      DDGstate.1 <- c(N = input$DDG.pop1.n)
+      DDGtime <- seq(0, input$DDG.time, by = 1)
+      DDG.NvTplot <- DDG.NvTplot + 
+        geom_path(data = as.data.frame(ode(func = DDGmod, y = DDGstate.1, parms = DDGpars.1, times = DDGtime)),
+                  aes(y = N, x = time, colour="Population 1")) +
+        scale_colour_manual(values=colourblind_custom, name=NULL) +
+        labs(x = "Time (generations)", y = "Population size (# individuals)")
+    }
+    if(input$DDG.pop2.check == TRUE){
+      DDGpars.2 <- c(r = input$DDG.pop2.r, K = input$DDG.pop2.K)
+      DDGstate.2 <- c(N = input$DDG.pop2.n)
+      DDGtime <- seq(0, input$DDG.time, by = 1)
+      DDG.NvTplot <- DDG.NvTplot + 
+        geom_path(data = as.data.frame(ode(func = DDGmod, y = DDGstate.2, parms = DDGpars.2, times = DDGtime)),
+                  aes(y = N, x = time, colour="Population 2")) +
+        scale_colour_manual(values=colourblind_custom, name=NULL) +
+        labs(x = "Time (generations)", y = "Population size (# individuals)")
+    }
+    DDG.NvTplot
   })
   output$DDG.plot.dNdTvN <- renderPlot({
-    DDGmod.pop1 <- function(Time, State, Pars){
+    DDGmod<- function(Time, State, Pars){
       with(as.list(c(State, Pars)), {
         dNdt = r * N *((K - N)/K)
         return(list(dNdt))
       })
     }
-    DDGpars.1 <- c(r = input$DDG.pop1.r, K = input$DDG.pop1.K)
-    DDGstate.1 <- c(N = input$DDG.pop1.n)
-    DDGtime <- seq(0, input$DDG.time, by = 1)
-    DDGdf.1 <- as.data.frame(ode(func = DDGmod.pop1, y = DDGstate.1, parms = DDGpars.1, times = DDGtime))
-    ggplot(DDGdf.1, aes(y = input$DDG.pop1.r * N *((input$DDG.pop1.K - N)/input$DDG.pop1.K), x = N)) + geom_path(aes(colour="Population 1")) +
-      scale_colour_manual(values=colourblind_custom, name=NULL) +
-      labs(x = "Population size (# individuals)", y = "Population growth rate (# individuals/generation)")
+    DDG.dNdTvNplot <- ggplot()
+    if(input$DDG.pop1.check == TRUE){
+      DDGpars.1 <- c(r = input$DDG.pop1.r, K = input$DDG.pop1.K)
+      DDGstate.1 <- c(N = input$DDG.pop1.n)
+      DDGtime <- seq(0, input$DDG.time, by = 1)
+      DDG.dNdTvNplot <- DDG.dNdTvNplot + 
+        geom_path(data=as.data.frame(ode(func = DDGmod, y = DDGstate.1, parms = DDGpars.1, times = DDGtime)),
+                  aes(x = N, y = input$DDG.pop1.r * N *((input$DDG.pop1.K - N)/input$DDG.pop1.K), colour="Population 1")) +
+        scale_colour_manual(values=colourblind_custom, name=NULL) +
+        labs(x = "Population size (# individuals)", y = "Population growth rate (# individuals/generation)")
+    }
+    if(input$DDG.pop2.check == TRUE){
+      DDGpars.2 <- c(r = input$DDG.pop2.r, K = input$DDG.pop2.K)
+      DDGstate.2 <- c(N = input$DDG.pop2.n)
+      DDGtime <- seq(0, input$DDG.time, by = 1)
+      DDG.dNdTvNplot <- DDG.dNdTvNplot + 
+        geom_path(data=as.data.frame(ode(func = DDGmod, y = DDGstate.2, parms = DDGpars.2, times = DDGtime)),
+                  aes(x = N, y = input$DDG.pop2.r * N *((input$DDG.pop2.K - N)/input$DDG.pop2.K), colour="Population 2")) +
+        scale_colour_manual(values=colourblind_custom, name=NULL) +
+        labs(x = "Population size (# individuals)", y = "Population growth rate (# individuals/generation)")
+    }
+    DDG.dNdTvNplot
   })
   output$DDG.plot.logNvT <- renderPlot({
-    DDGmod.pop1 <- function(Time, State, Pars){
+    DDGmod <- function(Time, State, Pars){
       with(as.list(c(State, Pars)), {
         dNdt = r * N *((K - N)/K)
         return(list(dNdt))
       })
     }
-    DDGpars.1 <- c(r = input$DDG.pop1.r, K = input$DDG.pop1.K)
-    DDGstate.1 <- c(N = input$DDG.pop1.n)
-    DDGtime <- seq(0, input$DDG.time, by = 1)
-    DDGdf.1 <- as.data.frame(ode(func = DDGmod.pop1, y = DDGstate.1, parms = DDGpars.1, times = DDGtime))
-    ggplot(DDGdf.1, aes(y = log(N), x = time)) + geom_path(aes(colour="Population 1")) +
-      scale_colour_manual(values=colourblind_custom, name=NULL) +
-      labs(x = "Time (generations)", y = "Log population size (# individuals)")
+    DDG.logNvTplot <- ggplot()
+    if(input$DDG.pop1.check == TRUE){
+      DDGpars.1 <- c(r = input$DDG.pop1.r, K = input$DDG.pop1.K)
+      DDGstate.1 <- c(N = input$DDG.pop1.n)
+      DDGtime <- seq(0, input$DDG.time, by = 1)
+      DDG.logNvTplot <- DDG.logNvTplot + 
+        geom_path(data = as.data.frame(ode(func = DDGmod, y = DDGstate.1, parms = DDGpars.1, times = DDGtime)),
+                  aes(y = log(N), x = time, colour="Population 1")) +
+        scale_colour_manual(values=colourblind_custom, name=NULL) +
+        labs(x = "Time (generations)", y = "Log population size (# individuals)")
+    }
+    if(input$DDG.pop2.check == TRUE){
+      DDGpars.2 <- c(r = input$DDG.pop2.r, K = input$DDG.pop2.K)
+      DDGstate.2 <- c(N = input$DDG.pop2.n)
+      DDGtime <- seq(0, input$DDG.time, by = 1)
+      DDG.logNvTplot <- DDG.logNvTplot + 
+        geom_path(data = as.data.frame(ode(func = DDGmod, y = DDGstate.2, parms = DDGpars.2, times = DDGtime)),
+                  aes(y = log(N), x = time, colour="Population 2")) +
+        scale_colour_manual(values=colourblind_custom, name=NULL) +
+        labs(x = "Time (generations)", y = "Log population size (# individuals)")
+    }
+    DDG.logNvTplot
   })
   output$DDG.plot.dNNdTvN <- renderPlot({
-    DDGmod.pop1 <- function(Time, State, Pars){
+    DDGmod <- function(Time, State, Pars){
       with(as.list(c(State, Pars)), {
         dNdt = r * N *((K - N)/K)
         return(list(dNdt))
       })
     }
-    DDGpars.1 <- c(r = input$DDG.pop1.r, K = input$DDG.pop1.K)
-    DDGstate.1 <- c(N = input$DDG.pop1.n)
-    DDGtime <- seq(0, input$DDG.time, by = 1)
-    DDGdf.1 <- as.data.frame(ode(func = DDGmod.pop1, y = DDGstate.1, parms = DDGpars.1, times = DDGtime))
-    ggplot(DDGdf.1, aes(y = input$DDG.pop1.r * ((input$DDG.pop1.K - N)/input$DDG.pop1.K), x = N)) + geom_path(aes(colour="Population 1")) +
-      scale_colour_manual(values=colourblind_custom, name=NULL) +
-      labs(x = "Population size (# individuals)", y = "Population size-corrected growth rate\n(# individuals/generation)")
+    DDG.dNNdTvNplot <- ggplot()
+    if(input$DDG.pop1.check == TRUE){
+      DDGpars.1 <- c(r = input$DDG.pop1.r, K = input$DDG.pop1.K)
+      DDGstate.1 <- c(N = input$DDG.pop1.n)
+      DDGtime <- seq(0, input$DDG.time, by = 1)
+      DDG.dNNdTvNplot <- DDG.dNNdTvNplot + 
+        geom_path(data=as.data.frame(ode(func = DDGmod, y = DDGstate.1, parms = DDGpars.1, times = DDGtime)),
+                  aes(x = N, y = input$DDG.pop1.r * ((input$DDG.pop1.K - N)/input$DDG.pop1.K), colour="Population 1")) +
+        scale_colour_manual(values=colourblind_custom, name=NULL) +
+        labs(x = "Population size (# individuals)", y = "Population size-corrected growth rate\n(# individuals/generation)")
+    }
+    if(input$DDG.pop2.check == TRUE){
+      DDGpars.2 <- c(r = input$DDG.pop2.r, K = input$DDG.pop2.K)
+      DDGstate.2 <- c(N = input$DDG.pop2.n)
+      DDGtime <- seq(0, input$DDG.time, by = 1)
+      DDG.dNNdTvNplot <- DDG.dNNdTvNplot + 
+        geom_path(data=as.data.frame(ode(func = DDGmod, y = DDGstate.2, parms = DDGpars.2, times = DDGtime)),
+                  aes(x = N, y = input$DDG.pop2.r * ((input$DDG.pop2.K - N)/input$DDG.pop2.K), colour="Population 2")) +
+        scale_colour_manual(values=colourblind_custom, name=NULL) +
+        labs(x = "Population size (# individuals)", y = "Population size-corrected growth rate\n(# individuals/generation)")
+    }
+    DDG.dNNdTvNplot
   })
 })
