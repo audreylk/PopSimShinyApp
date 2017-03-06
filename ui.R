@@ -10,7 +10,7 @@
 library(shiny) #this package is the one that allows the web app to exist
 
 shinyUI(fluidPage(
-  titlePanel("BIOL201 Population simulations"),
+  titlePanel("Population Simulations for Introductory Ecology"),
   tabsetPanel(type="tabs",
               tabPanel("Lotka-Volterra Competition",
                        h3("Population Parameters"),
@@ -38,7 +38,8 @@ shinyUI(fluidPage(
                        fluidRow(
                          column(6, h4("Population sizes over time"),plotOutput("LVC.plot")),
                          column(6, h4("Phase plane with combined trajectory"), plotOutput("LVC.phaseplane"))
-                       )
+                       ),
+                       p(em("Developed by"), a(href="http://audreylkelly.web.unc.edu", em("Audrey L. Kelly")))
               ),
               tabPanel("Single population growth",
                        tabsetPanel(type='tabs',
@@ -107,8 +108,9 @@ shinyUI(fluidPage(
                                               column(6, h4("Log population size versus time"), plotOutput("DDG.plot.logNvT")),
                                               column(6, h4("Population size-corrected growth rate versus population size"), plotOutput("DDG.plot.dNNdTvN"))
                                             )
-                                            )
-                                   ) 
+                                            ),
+                                   p(em("Developed by"), a(href="http://audreylkelly.web.unc.edu", em("Audrey L. Kelly")))
+                       )
                        )
               )
   )
