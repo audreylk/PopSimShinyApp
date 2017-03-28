@@ -58,7 +58,7 @@ shinyUI(fluidPage(
                                               )),
                                               column(3, wellPanel(
                                                 h4("Run time:"),
-                                                numericInput("DIG.time", label="Number of generations to run:", 20),
+                                                numericInput("DIG.time", label="Number of generations to run:", 25),
                                                 h4("Populations to graph:"),
                                                 checkboxInput("DIG.pop1.check", label="Population 1", value=TRUE),
                                                 checkboxInput("DIG.pop2.check", label="Population 2", value=FALSE),

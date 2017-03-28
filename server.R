@@ -30,9 +30,10 @@ shinyServer(function(input, output) {
     as.data.frame(ode(func = LotVmod.competition, y = LVCstate, parms = LVCpars, times = LVCtime)) %>%
       gather("pop", "popsize", 2:3) %>%
       ggplot(aes(x=time, y=popsize, colour=pop)) + geom_line() + 
-      labs(x="Time", y="Population size") +
+      labs(x="Time (generations)", y="Population size") +
       scale_color_manual(name=NULL, labels=c("Population 1", "Population 2"), values=c("darkorange", "turquoise")) +
-      scale_x_continuous(expand=c(0,0)) + scale_y_continuous(expand=c(0,0))
+      scale_x_continuous(expand=c(0,0)) + scale_y_continuous(expand=c(0,0)) +
+      theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
   })
   output$LVC.phaseplane <- renderPlot({
     LotVmod.competition <- function(Time, State, Pars) {
@@ -56,10 +57,11 @@ shinyServer(function(input, output) {
                          limits=c(0, (max(input$LVC.pop2.K/input$LVC.alpha21, input$LVC.pop1.K, input$LVC.pop1.n)))) +
       scale_y_continuous(expand=c(0,0), 
                          limits=c(0, (max(input$LVC.pop1.K/input$LVC.alpha12, input$LVC.pop2.K, input$LVC.pop2.n)))) +
-      annotate("text", x=input$LVC.pop1.n, y=input$LVC.pop2.n, label="Time = 0", hjust=-0.1) +
-      annotate("text", x=tail(LVCdf$x, n=1), y=tail(LVCdf$y, n=1), label=paste("Time = ", input$LVC.time, sep=""), hjust=-0.1) +
+      annotate("text", x=input$LVC.pop1.n, y=input$LVC.pop2.n, label="Generation 0", hjust=-0.1) +
+      annotate("text", x=tail(LVCdf$x, n=1), y=tail(LVCdf$y, n=1), label=paste("Generation ", input$LVC.time, sep=""), hjust=-0.1) +
       scale_colour_manual(values=c("black", "darkorange", "turquoise"), name=NULL) +
-      labs(x="Population 1 size", y="Population 2 size")
+      labs(x="Population 1 size", y="Population 2 size") +
+      theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
   })
   output$DIG.plot.NvT <- renderPlot({
     DIGmod <- function(Time, State, Pars){
@@ -77,7 +79,8 @@ shinyServer(function(input, output) {
         geom_path(data = as.data.frame(ode(func = DIGmod, y = DIGstate.1, parms = DIGpars.1, times = DIGtime)),
                   aes(x=time, y=N, colour="Population 1")) + 
         scale_colour_manual(values=colourblind_custom, name = NULL) +
-        labs(x = "Time (generations)", y = "Population size (# individuals)")
+        labs(x = "Time (generations)", y = "Population size (# individuals)") +
+        theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
     }
     if(input$DIG.pop2.check == TRUE){
       DIGpars.2 <- c(r = input$DIG.pop2.r)
@@ -87,7 +90,8 @@ shinyServer(function(input, output) {
         geom_path(data = as.data.frame(ode(func = DIGmod, y = DIGstate.2, parms = DIGpars.2, times = DIGtime)),
                   aes(x=time, y=N, colour="Population 2")) +
         scale_colour_manual(values=colourblind_custom, name = NULL) +
-        labs(x = "Time (generations)", y = "Population size (# individuals)")
+        labs(x = "Time (generations)", y = "Population size (# individuals)") +
+        theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
     }
     DIG.NvTplot
   })
@@ -107,7 +111,8 @@ shinyServer(function(input, output) {
         geom_path(data = as.data.frame(ode(func = DIGmod, y = DIGstate.1, parms = DIGpars.1, times = DIGtime)),
                   aes(x = N, y = N*input$DIG.pop1.r, colour="Population 1")) +
         scale_colour_manual(values=colourblind_custom, name=NULL) +
-        labs(x="Population size (# individuals)", y="Population growth rate (# individuals/generation)")
+        labs(x="Population size (# individuals)", y="Population growth rate (# individuals/generation)") +
+        theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
     }
     if(input$DIG.pop2.check == TRUE){
       DIGpars.2 <- c(r = input$DIG.pop2.r)
@@ -117,7 +122,8 @@ shinyServer(function(input, output) {
         geom_path(data = as.data.frame(ode(func = DIGmod, y = DIGstate.2, parms = DIGpars.2, times = DIGtime)),
                   aes(x = N, y = N*input$DIG.pop2.r, colour="Population 2")) +
         scale_colour_manual(values=colourblind_custom, name=NULL) +
-        labs(x="Population size (# individuals)", y="Population growth rate (# individuals/generation)")
+        labs(x="Population size (# individuals)", y="Population growth rate (# individuals/generation)") +
+        theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
     }
     DIG.dNdTvNplot
   })
@@ -135,9 +141,11 @@ shinyServer(function(input, output) {
       DIGtime <- seq(0, input$DIG.time, by = 1)
       DIG.logNvTplot <- DIG.logNvTplot + 
         geom_path(data = as.data.frame(ode(func = DIGmod, y = DIGstate.1, parms = DIGpars.1, times = DIGtime)),
-                  aes(y = log(N), x = time, colour="Population 1")) +
+                  aes(y = N, x = time, colour="Population 1")) +
         scale_colour_manual(values = colourblind_custom, name=NULL) +
-        labs(x = "Time (generations)", y = "Log population size")
+        scale_y_log10() + annotation_logticks(sides='l') +
+        labs(x = "Time (generations)", y = "Log population size (# individuals)") +
+        theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
     }
     if(input$DIG.pop2.check == TRUE){
       DIGpars.2 <- c(r = input$DIG.pop2.r)
@@ -145,9 +153,11 @@ shinyServer(function(input, output) {
       DIGtime <- seq(0, input$DIG.time, by = 1)
       DIG.logNvTplot <- DIG.logNvTplot + 
         geom_path(data = as.data.frame(ode(func = DIGmod, y = DIGstate.2, parms = DIGpars.2, times = DIGtime)),
-                  aes(y = log(N), x = time, colour="Population 2")) +
+                  aes(y = N, x = time, colour="Population 2")) +
         scale_colour_manual(values = colourblind_custom, name=NULL) +
-        labs(x = "Time (generations)", y = "Log population size")
+        scale_y_log10() + annotation_logticks(sides='l') +
+        labs(x = "Time (generations)", y = "Log population size (# individuals)") +
+        theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
     }
     DIG.logNvTplot
   })
@@ -167,7 +177,8 @@ shinyServer(function(input, output) {
         geom_path(data=as.data.frame(ode(func = DIGmod, y = DIGstate.1, parms = DIGpars.1, times = DIGtime)),
                   aes(x = N, y = input$DIG.pop1.r, colour="Population 1")) +
         scale_colour_manual(values=colourblind_custom, name=NULL) +
-        labs(x = "Population size (# individuals)", y = "Population size-corrected growth rate\n(# individuals/generation)")
+        labs(x = "Population size (# individuals)", y = "Population size-corrected growth rate\n(# individuals/generation)") +
+        theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
     }
     if(input$DIG.pop2.check == TRUE){
       DIGpars.2 <- c(r = input$DIG.pop2.r)
@@ -177,7 +188,8 @@ shinyServer(function(input, output) {
         geom_path(data=as.data.frame(ode(func = DIGmod, y = DIGstate.2, parms = DIGpars.2, times = DIGtime)),
                   aes(x = N, y = input$DIG.pop2.r, colour="Population 2")) +
         scale_colour_manual(values=colourblind_custom, name=NULL) +
-        labs(x = "Population size (# individuals)", y = "Population size-corrected growth rate\n(# individuals/generation)")
+        labs(x = "Population size (# individuals)", y = "Population size-corrected growth rate\n(# individuals/generation)") +
+        theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
     }
     DIG.dNNdTvNplot
   })
@@ -197,7 +209,8 @@ shinyServer(function(input, output) {
         geom_path(data = as.data.frame(ode(func = DDGmod, y = DDGstate.1, parms = DDGpars.1, times = DDGtime)),
                   aes(y = N, x = time, colour="Population 1")) +
         scale_colour_manual(values=colourblind_custom, name=NULL) +
-        labs(x = "Time (generations)", y = "Population size (# individuals)")
+        labs(x = "Time (generations)", y = "Population size (# individuals)") +
+        theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
     }
     if(input$DDG.pop2.check == TRUE){
       DDGpars.2 <- c(r = input$DDG.pop2.r, K = input$DDG.pop2.K)
@@ -207,7 +220,8 @@ shinyServer(function(input, output) {
         geom_path(data = as.data.frame(ode(func = DDGmod, y = DDGstate.2, parms = DDGpars.2, times = DDGtime)),
                   aes(y = N, x = time, colour="Population 2")) +
         scale_colour_manual(values=colourblind_custom, name=NULL) +
-        labs(x = "Time (generations)", y = "Population size (# individuals)")
+        labs(x = "Time (generations)", y = "Population size (# individuals)") +
+        theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
     }
     DDG.NvTplot
   })
@@ -227,7 +241,8 @@ shinyServer(function(input, output) {
         geom_path(data=as.data.frame(ode(func = DDGmod, y = DDGstate.1, parms = DDGpars.1, times = DDGtime)),
                   aes(x = N, y = input$DDG.pop1.r * N *((input$DDG.pop1.K - N)/input$DDG.pop1.K), colour="Population 1")) +
         scale_colour_manual(values=colourblind_custom, name=NULL) +
-        labs(x = "Population size (# individuals)", y = "Population growth rate (# individuals/generation)")
+        labs(x = "Population size (# individuals)", y = "Population growth rate (# individuals/generation)") +
+        theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
     }
     if(input$DDG.pop2.check == TRUE){
       DDGpars.2 <- c(r = input$DDG.pop2.r, K = input$DDG.pop2.K)
@@ -237,7 +252,8 @@ shinyServer(function(input, output) {
         geom_path(data=as.data.frame(ode(func = DDGmod, y = DDGstate.2, parms = DDGpars.2, times = DDGtime)),
                   aes(x = N, y = input$DDG.pop2.r * N *((input$DDG.pop2.K - N)/input$DDG.pop2.K), colour="Population 2")) +
         scale_colour_manual(values=colourblind_custom, name=NULL) +
-        labs(x = "Population size (# individuals)", y = "Population growth rate (# individuals/generation)")
+        labs(x = "Population size (# individuals)", y = "Population growth rate (# individuals/generation)") +
+        theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
     }
     DDG.dNdTvNplot
   })
@@ -255,9 +271,11 @@ shinyServer(function(input, output) {
       DDGtime <- seq(0, input$DDG.time, by = 1)
       DDG.logNvTplot <- DDG.logNvTplot + 
         geom_path(data = as.data.frame(ode(func = DDGmod, y = DDGstate.1, parms = DDGpars.1, times = DDGtime)),
-                  aes(y = log(N), x = time, colour="Population 1")) +
+                  aes(y = N, x = time, colour="Population 1")) +
         scale_colour_manual(values=colourblind_custom, name=NULL) +
-        labs(x = "Time (generations)", y = "Log population size (# individuals)")
+        scale_y_log10() + annotation_logticks(sides='l') +
+        labs(x = "Time (generations)", y = "Log population size (# individuals)") +
+        theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
     }
     if(input$DDG.pop2.check == TRUE){
       DDGpars.2 <- c(r = input$DDG.pop2.r, K = input$DDG.pop2.K)
@@ -265,9 +283,11 @@ shinyServer(function(input, output) {
       DDGtime <- seq(0, input$DDG.time, by = 1)
       DDG.logNvTplot <- DDG.logNvTplot + 
         geom_path(data = as.data.frame(ode(func = DDGmod, y = DDGstate.2, parms = DDGpars.2, times = DDGtime)),
-                  aes(y = log(N), x = time, colour="Population 2")) +
+                  aes(y = N, x = time, colour="Population 2")) +
         scale_colour_manual(values=colourblind_custom, name=NULL) +
-        labs(x = "Time (generations)", y = "Log population size (# individuals)")
+        scale_y_log10() + annotation_logticks(sides='l') +
+        labs(x = "Time (generations)", y = "Log population size (# individuals)") +
+        theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
     }
     DDG.logNvTplot
   })
@@ -287,7 +307,8 @@ shinyServer(function(input, output) {
         geom_path(data=as.data.frame(ode(func = DDGmod, y = DDGstate.1, parms = DDGpars.1, times = DDGtime)),
                   aes(x = N, y = input$DDG.pop1.r * ((input$DDG.pop1.K - N)/input$DDG.pop1.K), colour="Population 1")) +
         scale_colour_manual(values=colourblind_custom, name=NULL) +
-        labs(x = "Population size (# individuals)", y = "Population size-corrected growth rate\n(# individuals/generation)")
+        labs(x = "Population size (# individuals)", y = "Population size-corrected growth rate\n(# individuals/generation)") +
+        theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
     }
     if(input$DDG.pop2.check == TRUE){
       DDGpars.2 <- c(r = input$DDG.pop2.r, K = input$DDG.pop2.K)
@@ -297,7 +318,8 @@ shinyServer(function(input, output) {
         geom_path(data=as.data.frame(ode(func = DDGmod, y = DDGstate.2, parms = DDGpars.2, times = DDGtime)),
                   aes(x = N, y = input$DDG.pop2.r * ((input$DDG.pop2.K - N)/input$DDG.pop2.K), colour="Population 2")) +
         scale_colour_manual(values=colourblind_custom, name=NULL) +
-        labs(x = "Population size (# individuals)", y = "Population size-corrected growth rate\n(# individuals/generation)")
+        labs(x = "Population size (# individuals)", y = "Population size-corrected growth rate\n(# individuals/generation)") +
+        theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
     }
     DDG.dNNdTvNplot
   })
