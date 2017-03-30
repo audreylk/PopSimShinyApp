@@ -1,9 +1,8 @@
 FROM r-base:latest
 
-MAINTAINER Winston Chang "winston@rstudio.com"
+MAINTAINER Flavio Barros "flaviommbarros@gmail.com"
 
-# Install dependencies and Download and install shiny server
-RUN apt-get update && apt-get install -y -t unstable \
+RUN apt-get update && apt-get install -y \
     sudo \
     gdebi-core \
     pandoc \
@@ -11,17 +10,22 @@ RUN apt-get update && apt-get install -y -t unstable \
     libcurl4-gnutls-dev \
     libcairo2-dev/unstable \
     libxt-dev \
-    libxml2-dev && \
-    wget --no-verbose https://s3.amazonaws.com/rstudio-shiny-server-os-build/ubuntu-12.04/x86_64/VERSION -O "version.txt" && \
+    libssl-dev \
+    libxml2-dev
+
+# Download and install shiny server
+RUN wget --no-verbose https://s3.amazonaws.com/rstudio-shiny-server-os-build/ubuntu-12.04/x86_64/VERSION -O "version.txt" && \
     VERSION=$(cat version.txt)  && \
     wget --no-verbose "https://s3.amazonaws.com/rstudio-shiny-server-os-build/ubuntu-12.04/x86_64/shiny-server-$VERSION-amd64.deb" -O ss-latest.deb && \
     gdebi -n ss-latest.deb && \
-    rm -f version.txt ss-latest.deb && \
-    R -e "install.packages(c('shiny', 'rmarkdown', 'ggplot2', 'tidyverse', 'deSolve', 'remotes'), repos='https://cran.rstudio.com/')" && \
-    cp -R /usr/local/lib/R/site-library/shiny/examples/* /srv/shiny-server/ && \
-    rm -rf /var/lib/apt/lists/*
+    rm -f version.txt ss-latest.deb
 
-EXPOSE 3838
+RUN R -e "install.packages(c('shiny', 'rmarkdown', 'tidyverse', 'ggplot2', 'deSolve', 'remotes'), repos='http://cran.rstudio.com/')"
+
+COPY shiny-server.conf  /etc/shiny-server/shiny-server.conf
+COPY /myapp /srv/shiny-server/
+
+EXPOSE 80
 
 COPY shiny-server.sh /usr/bin/shiny-server.sh
 
