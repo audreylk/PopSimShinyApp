@@ -30,7 +30,7 @@ shinyServer(function(input, output) {
     as.data.frame(ode(func = LotVmod.competition, y = LVCstate, parms = LVCpars, times = LVCtime)) %>%
       gather("pop", "popsize", 2:3) %>%
       ggplot(aes(x=time, y=popsize, colour=pop)) + geom_line() + 
-      labs(x="Time (generations)", y="Population size") +
+      labs(x="Time (generations)", y="Population size (# individuals)") +
       scale_color_manual(name=NULL, labels=c("Population 1", "Population 2"), values=c("darkorange", "turquoise")) +
       scale_x_continuous(expand=c(0,0)) + scale_y_continuous(expand=c(0,0)) +
       theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
@@ -60,7 +60,7 @@ shinyServer(function(input, output) {
       annotate("text", x=input$LVC.pop1.n, y=input$LVC.pop2.n, label="Generation 0", hjust=-0.1) +
       annotate("text", x=tail(LVCdf$x, n=1), y=tail(LVCdf$y, n=1), label=paste("Generation ", input$LVC.time, sep=""), hjust=-0.1) +
       scale_colour_manual(values=c("black", "darkorange", "turquoise"), name=NULL) +
-      labs(x="Population 1 size", y="Population 2 size") +
+      labs(x="Population 1 size (# individuals)", y="Population 2 size (# individuals)") +
       theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
   })
   output$DIG.plot.NvT <- renderPlot({
@@ -93,6 +93,17 @@ shinyServer(function(input, output) {
         labs(x = "Time (generations)", y = "Population size (# individuals)") +
         theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
     }
+    if(input$DIG.pop3.check == TRUE){
+      DIGpars.3 <- c(r = input$DIG.pop3.r)
+      DIGstate.3 <- c(N = input$DIG.pop3.n)
+      DIGtime <- seq(0, input$DIG.time, by = 1)
+      DIG.NvTplot <- DIG.NvTplot +
+        geom_path(data = as.data.frame(ode(func = DIGmod, y = DIGstate.3, parms = DIGpars.3, times = DIGtime)),
+                  aes(x=time, y=N, colour="Population 3")) +
+        scale_colour_manual(values=colourblind_custom, name = NULL) +
+        labs(x = "Time (generations)", y = "Population size (# individuals)") +
+        theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
+    }
     DIG.NvTplot
   })
   output$DIG.plot.dNdTvN <- renderPlot({
@@ -111,7 +122,7 @@ shinyServer(function(input, output) {
         geom_path(data = as.data.frame(ode(func = DIGmod, y = DIGstate.1, parms = DIGpars.1, times = DIGtime)),
                   aes(x = N, y = N*input$DIG.pop1.r, colour="Population 1")) +
         scale_colour_manual(values=colourblind_custom, name=NULL) +
-        labs(x="Population size (# individuals)", y="Population growth rate (# individuals/generation)") +
+        labs(x="Population size (# individuals)", y="Population growth rate\n(# individuals/generation)") +
         theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
     }
     if(input$DIG.pop2.check == TRUE){
@@ -122,7 +133,18 @@ shinyServer(function(input, output) {
         geom_path(data = as.data.frame(ode(func = DIGmod, y = DIGstate.2, parms = DIGpars.2, times = DIGtime)),
                   aes(x = N, y = N*input$DIG.pop2.r, colour="Population 2")) +
         scale_colour_manual(values=colourblind_custom, name=NULL) +
-        labs(x="Population size (# individuals)", y="Population growth rate (# individuals/generation)") +
+        labs(x="Population size (# individuals)", y="Population growth rate\n(# individuals/generation)") +
+        theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
+    }
+    if(input$DIG.pop3.check == TRUE){
+      DIGpars.3 <- c(r = input$DIG.pop3.r)
+      DIGstate.3 <- c(N = input$DIG.pop3.n)
+      DIGtime <- seq(0, input$DIG.time, by = 1)
+      DIG.dNdTvNplot <- DIG.dNdTvNplot + 
+        geom_path(data = as.data.frame(ode(func = DIGmod, y = DIGstate.3, parms = DIGpars.3, times = DIGtime)),
+                  aes(x = N, y = N*input$DIG.pop3.r, colour="Population 3")) +
+        scale_colour_manual(values=colourblind_custom, name=NULL) +
+        labs(x="Population size (# individuals)", y="Population growth rate\n(# individuals/generation)") +
         theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
     }
     DIG.dNdTvNplot
@@ -159,6 +181,18 @@ shinyServer(function(input, output) {
         labs(x = "Time (generations)", y = "Log population size (# individuals)") +
         theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
     }
+    if(input$DIG.pop3.check == TRUE){
+      DIGpars.3 <- c(r = input$DIG.pop3.r)
+      DIGstate.3 <- c(N = input$DIG.pop3.n)
+      DIGtime <- seq(0, input$DIG.time, by = 1)
+      DIG.logNvTplot <- DIG.logNvTplot + 
+        geom_path(data = as.data.frame(ode(func = DIGmod, y = DIGstate.3, parms = DIGpars.3, times = DIGtime)),
+                  aes(y = N, x = time, colour="Population 3")) +
+        scale_colour_manual(values = colourblind_custom, name=NULL) +
+        scale_y_log10() + annotation_logticks(sides='l') +
+        labs(x = "Time (generations)", y = "Log population size (# individuals)") +
+        theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
+    }
     DIG.logNvTplot
   })
   output$DIG.plot.dNNdTvN <- renderPlot({
@@ -177,7 +211,7 @@ shinyServer(function(input, output) {
         geom_path(data=as.data.frame(ode(func = DIGmod, y = DIGstate.1, parms = DIGpars.1, times = DIGtime)),
                   aes(x = N, y = input$DIG.pop1.r, colour="Population 1")) +
         scale_colour_manual(values=colourblind_custom, name=NULL) +
-        labs(x = "Population size (# individuals)", y = "Population size-corrected growth rate\n(# individuals/generation)") +
+        labs(x = "Population size (# individuals)", y = "Per-capita population growth rate\n(# individuals/(generation*individuals))") +
         theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
     }
     if(input$DIG.pop2.check == TRUE){
@@ -188,7 +222,18 @@ shinyServer(function(input, output) {
         geom_path(data=as.data.frame(ode(func = DIGmod, y = DIGstate.2, parms = DIGpars.2, times = DIGtime)),
                   aes(x = N, y = input$DIG.pop2.r, colour="Population 2")) +
         scale_colour_manual(values=colourblind_custom, name=NULL) +
-        labs(x = "Population size (# individuals)", y = "Population size-corrected growth rate\n(# individuals/generation)") +
+        labs(x = "Population size (# individuals)", y = "Per-capita population growth rate\n(# individuals/(generation*individuals))") +
+        theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
+    }
+    if(input$DIG.pop3.check == TRUE){
+      DIGpars.3 <- c(r = input$DIG.pop3.r)
+      DIGstate.3 <- c(N = input$DIG.pop3.n)
+      DIGtime <- seq(0, input$DIG.time, by = 1)
+      DIG.dNNdTvNplot <- DIG.dNNdTvNplot +
+        geom_path(data=as.data.frame(ode(func = DIGmod, y = DIGstate.3, parms = DIGpars.3, times = DIGtime)),
+                  aes(x = N, y = input$DIG.pop3.r, colour="Population 3")) +
+        scale_colour_manual(values=colourblind_custom, name=NULL) +
+        labs(x = "Population size (# individuals)", y = "Per-capita population growth rate\n(# individuals/(generation*individuals))") +
         theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
     }
     DIG.dNNdTvNplot
@@ -223,6 +268,17 @@ shinyServer(function(input, output) {
         labs(x = "Time (generations)", y = "Population size (# individuals)") +
         theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
     }
+    if(input$DDG.pop3.check == TRUE){
+      DDGpars.3 <- c(r = input$DDG.pop3.r, K = input$DDG.pop3.K)
+      DDGstate.3 <- c(N = input$DDG.pop3.n)
+      DDGtime <- seq(0, input$DDG.time, by = 1)
+      DDG.NvTplot <- DDG.NvTplot + 
+        geom_path(data = as.data.frame(ode(func = DDGmod, y = DDGstate.3, parms = DDGpars.3, times = DDGtime)),
+                  aes(y = N, x = time, colour="Population 3")) +
+        scale_colour_manual(values=colourblind_custom, name=NULL) +
+        labs(x = "Time (generations)", y = "Population size (# individuals)") +
+        theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
+    }
     DDG.NvTplot
   })
   output$DDG.plot.dNdTvN <- renderPlot({
@@ -241,7 +297,7 @@ shinyServer(function(input, output) {
         geom_path(data=as.data.frame(ode(func = DDGmod, y = DDGstate.1, parms = DDGpars.1, times = DDGtime)),
                   aes(x = N, y = input$DDG.pop1.r * N *((input$DDG.pop1.K - N)/input$DDG.pop1.K), colour="Population 1")) +
         scale_colour_manual(values=colourblind_custom, name=NULL) +
-        labs(x = "Population size (# individuals)", y = "Population growth rate (# individuals/generation)") +
+        labs(x = "Population size (# individuals)", y = "Population growth rate\n(# individuals/generation)") +
         theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
     }
     if(input$DDG.pop2.check == TRUE){
@@ -252,7 +308,18 @@ shinyServer(function(input, output) {
         geom_path(data=as.data.frame(ode(func = DDGmod, y = DDGstate.2, parms = DDGpars.2, times = DDGtime)),
                   aes(x = N, y = input$DDG.pop2.r * N *((input$DDG.pop2.K - N)/input$DDG.pop2.K), colour="Population 2")) +
         scale_colour_manual(values=colourblind_custom, name=NULL) +
-        labs(x = "Population size (# individuals)", y = "Population growth rate (# individuals/generation)") +
+        labs(x = "Population size (# individuals)", y = "Population growth rate\n(# individuals/generation)") +
+        theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
+    }
+    if(input$DDG.pop3.check == TRUE){
+      DDGpars.3 <- c(r = input$DDG.pop3.r, K = input$DDG.pop3.K)
+      DDGstate.3 <- c(N = input$DDG.pop3.n)
+      DDGtime <- seq(0, input$DDG.time, by = 1)
+      DDG.dNdTvNplot <- DDG.dNdTvNplot + 
+        geom_path(data=as.data.frame(ode(func = DDGmod, y = DDGstate.3, parms = DDGpars.3, times = DDGtime)),
+                  aes(x = N, y = input$DDG.pop3.r * N *((input$DDG.pop3.K - N)/input$DDG.pop3.K), colour="Population 3")) +
+        scale_colour_manual(values=colourblind_custom, name=NULL) +
+        labs(x = "Population size (# individuals)", y = "Population growth rate\n(# individuals/generation)") +
         theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
     }
     DDG.dNdTvNplot
@@ -289,6 +356,18 @@ shinyServer(function(input, output) {
         labs(x = "Time (generations)", y = "Log population size (# individuals)") +
         theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
     }
+    if(input$DDG.pop3.check == TRUE){
+      DDGpars.3 <- c(r = input$DDG.pop3.r, K = input$DDG.pop3.K)
+      DDGstate.3 <- c(N = input$DDG.pop3.n)
+      DDGtime <- seq(0, input$DDG.time, by = 1)
+      DDG.logNvTplot <- DDG.logNvTplot + 
+        geom_path(data = as.data.frame(ode(func = DDGmod, y = DDGstate.3, parms = DDGpars.3, times = DDGtime)),
+                  aes(y = N, x = time, colour="Population 3")) +
+        scale_colour_manual(values=colourblind_custom, name=NULL) +
+        scale_y_log10() + annotation_logticks(sides='l') +
+        labs(x = "Time (generations)", y = "Log population size (# individuals)") +
+        theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
+    }
     DDG.logNvTplot
   })
   output$DDG.plot.dNNdTvN <- renderPlot({
@@ -307,7 +386,7 @@ shinyServer(function(input, output) {
         geom_path(data=as.data.frame(ode(func = DDGmod, y = DDGstate.1, parms = DDGpars.1, times = DDGtime)),
                   aes(x = N, y = input$DDG.pop1.r * ((input$DDG.pop1.K - N)/input$DDG.pop1.K), colour="Population 1")) +
         scale_colour_manual(values=colourblind_custom, name=NULL) +
-        labs(x = "Population size (# individuals)", y = "Population size-corrected growth rate\n(# individuals/generation)") +
+        labs(x = "Population size (# individuals)", y = "Per-capita population growth rate\n(# individuals/(generation*individuals))") +
         theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
     }
     if(input$DDG.pop2.check == TRUE){
@@ -318,7 +397,18 @@ shinyServer(function(input, output) {
         geom_path(data=as.data.frame(ode(func = DDGmod, y = DDGstate.2, parms = DDGpars.2, times = DDGtime)),
                   aes(x = N, y = input$DDG.pop2.r * ((input$DDG.pop2.K - N)/input$DDG.pop2.K), colour="Population 2")) +
         scale_colour_manual(values=colourblind_custom, name=NULL) +
-        labs(x = "Population size (# individuals)", y = "Population size-corrected growth rate\n(# individuals/generation)") +
+        labs(x = "Population size (# individuals)", y = "Per-capita population growth rate\n(# individuals/(generation*individuals))") +
+        theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
+    }
+    if(input$DDG.pop3.check == TRUE){
+      DDGpars.3 <- c(r = input$DDG.pop3.r, K = input$DDG.pop3.K)
+      DDGstate.3 <- c(N = input$DDG.pop3.n)
+      DDGtime <- seq(0, input$DDG.time, by = 1)
+      DDG.dNNdTvNplot <- DDG.dNNdTvNplot + 
+        geom_path(data=as.data.frame(ode(func = DDGmod, y = DDGstate.3, parms = DDGpars.3, times = DDGtime)),
+                  aes(x = N, y = input$DDG.pop3.r * ((input$DDG.pop3.K - N)/input$DDG.pop3.K), colour="Population 3")) +
+        scale_colour_manual(values=colourblind_custom, name=NULL) +
+        labs(x = "Population size (# individuals)", y = "Per-capita population growth rate\n(# individuals/(generation*individuals))") +
         theme(axis.title = element_text(size=16), axis.text = element_text(size=12), legend.text = element_text(size=12))
     }
     DDG.dNNdTvNplot

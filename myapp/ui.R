@@ -48,13 +48,18 @@ shinyUI(fluidPage(
                                             fluidRow(
                                               column(3, wellPanel(
                                                 h4("Population 1:"),
-                                                numericInput("DIG.pop1.n", label=HTML(paste("Starting population size, N", paste(tags$sub(1), "(0)", sep=""), sep="")), 10),
+                                                numericInput("DIG.pop1.n", label=HTML(paste("Starting population size, N", paste(tags$sub(1), "(0):", sep=""), sep="")), 10),
                                                 numericInput("DIG.pop1.r", label=HTML(paste("Intrinsic growth rate, r", paste(tags$sub(1), ":", sep=""), sep="")), .1)
-                                                )),
+                                              )),
                                               column(3, wellPanel(
                                                 h4("Population 2:"),
-                                                numericInput("DIG.pop2.n", label=HTML(paste("Starting population size, N", paste(tags$sub(2), "(0)", sep=""), sep="")), 10),
+                                                numericInput("DIG.pop2.n", label=HTML(paste("Starting population size, N", paste(tags$sub(2), "(0):", sep=""), sep="")), 10),
                                                 numericInput("DIG.pop2.r", label=HTML(paste("Intrinsic growth rate, r", paste(tags$sub(2), ":", sep=""), sep="")), .1)
+                                              )),
+                                              column(3, wellPanel(
+                                                h4("Population 3:"),
+                                                numericInput("DIG.pop3.n", label=HTML(paste("Starting population size, N", paste(tags$sub(3), "(0):", sep=""), sep="")), 10),
+                                                numericInput("DIG.pop3.r", label=HTML(paste("Intrinsic growth rate, r", paste(tags$sub(3), ":", sep=""), sep="")), .1)
                                               )),
                                               column(3, wellPanel(
                                                 h4("Run time:"),
@@ -62,6 +67,7 @@ shinyUI(fluidPage(
                                                 h4("Populations to graph:"),
                                                 checkboxInput("DIG.pop1.check", label="Population 1", value=TRUE),
                                                 checkboxInput("DIG.pop2.check", label="Population 2", value=FALSE),
+                                                checkboxInput("DIG.pop3.check", label="Population 3", value=FALSE),
                                                 submitButton("Update graphs")
                                               ))
                                             ),
@@ -72,7 +78,7 @@ shinyUI(fluidPage(
                                             ),
                                             fluidRow(
                                               column(6, h4("Log population size versus time"), plotOutput("DIG.plot.logNvT")),
-                                              column(6, h4("Population size-corrected growth rate versus population size"), plotOutput("DIG.plot.dNNdTvN"))
+                                              column(6, h4("Per-capita population growth rate versus population size"), plotOutput("DIG.plot.dNNdTvN"))
                                             )
                                             ),
                                    tabPanel("Density-Dependent Growth (continuous logistic)",
@@ -91,11 +97,18 @@ shinyUI(fluidPage(
                                                 numericInput("DDG.pop2.K", label=HTML(paste("Carrying capacity, K", paste(tags$sub(2), ":", sep=""), sep="")), 250)
                                               )),
                                               column(3, wellPanel(
+                                                h4("Population 3:"),
+                                                numericInput("DDG.pop3.n", label=HTML(paste("Starting population size, N", paste(tags$sub(3), "(0):", sep=""), sep="")), 10),
+                                                numericInput("DDG.pop3.r", label=HTML(paste("Intrinsic growth rate, r", paste(tags$sub(3), ":", sep=""), sep="")), .1),
+                                                numericInput("DDG.pop3.K", label=HTML(paste("Carrying capacity, K", paste(tags$sub(3), ":", sep=""), sep="")), 250)
+                                              )),
+                                              column(3, wellPanel(
                                                 h4("Run time:"),
                                                 numericInput("DDG.time", label="Number of generations to run:", 100),
                                                 h4("Populations to graph:"),
                                                 checkboxInput("DDG.pop1.check", label="Population 1", value = TRUE),
                                                 checkboxInput("DDG.pop2.check", label="Population 2", value = FALSE),
+                                                checkboxInput("DDG.pop3.check", label="Population 3", value = FALSE),
                                                 submitButton("Update graphs")
                                               ))
                                             ),
@@ -106,7 +119,7 @@ shinyUI(fluidPage(
                                             ),
                                             fluidRow(
                                               column(6, h4("Log population size versus time"), plotOutput("DDG.plot.logNvT")),
-                                              column(6, h4("Population size-corrected growth rate versus population size"), plotOutput("DDG.plot.dNNdTvN"))
+                                              column(6, h4("Per-capita population growth rate versus population size"), plotOutput("DDG.plot.dNNdTvN"))
                                             )
                                             ),
                                    p(em("Developed by"), a(href="http://audreylkelly.web.unc.edu", em("Audrey L. Kelly")))
