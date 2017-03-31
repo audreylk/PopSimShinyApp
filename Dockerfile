@@ -11,7 +11,9 @@ RUN apt-get update && apt-get install -y \
     libcairo2-dev/unstable \
     libxt-dev \
     libssl-dev \
-    libxml2-dev
+    libxml2-dev \
+    libnss-wrapper \
+    gettext
 
 # Download and install shiny server
 RUN wget --no-verbose https://s3.amazonaws.com/rstudio-shiny-server-os-build/ubuntu-12.04/x86_64/VERSION -O "version.txt" && \
@@ -22,10 +24,23 @@ RUN wget --no-verbose https://s3.amazonaws.com/rstudio-shiny-server-os-build/ubu
 
 RUN R -e "install.packages(c('shiny', 'rmarkdown', 'tidyverse', 'ggplot2', 'deSolve', 'remotes'), repos='http://cran.rstudio.com/')"
 
+RUN chown -R 1001:0 /srv/shiny-server && \
+    chmod -R ug+rwx /srv/shiny-server && \
+    mkdir -p /var/log/shiny-server && \
+    chown -R 1001:0 /var/log/shiny-server && \
+    touch /tmp/passwd && \
+    chmod 664 /tmp/passwd
+
+# Set associated nss_wrapper environment variables.
+ENV LD_PRELOAD=/usr/lib64/libnss_wrapper.so
+ENV NSS_WRAPPER_PASSWD=/tmp/passwd
+ENV NSS_WRAPPER_GROUP=/etc/group
+
 COPY shiny-server.conf  /etc/shiny-server/shiny-server.conf
 COPY /myapp /srv/shiny-server/
+COPY passwd.template /tmp/passwd.template
 
-EXPOSE 80
+EXPOSE 8080
 
 COPY shiny-server.sh /usr/bin/shiny-server.sh
 USER 1001
