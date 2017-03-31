@@ -28,11 +28,15 @@ RUN chown -R 1001:0 /srv/shiny-server && \
     chmod -R ug+rwx /srv/shiny-server && \
     mkdir -p /var/log/shiny-server && \
     chown -R 1001:0 /var/log/shiny-server && \
+    chmod -R ug+rwx /var/log/shiny-server && \
+    mkdir -p /var/lib/shiny-server/bookmarks && \
+    chown -R 1001:0 /var/lib/shiny-server/bookmarks && \
+    chmod -R ug+rwx /var/lib/shiny-server/bookmarks && \
     touch /tmp/passwd && \
     chmod 664 /tmp/passwd
 
 # Set associated nss_wrapper environment variables.
-ENV LD_PRELOAD=/usr/lib64/libnss_wrapper.so
+ENV LD_PRELOAD=/usr/lib/libnss_wrapper.so
 ENV NSS_WRAPPER_PASSWD=/tmp/passwd
 ENV NSS_WRAPPER_GROUP=/etc/group
 
