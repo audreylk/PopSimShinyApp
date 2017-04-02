@@ -18,16 +18,16 @@ shinyUI(fluidPage(
                          column(3, wellPanel(
                            h4("Population 1:"),
                            numericInput("LVC.pop1.n", label=HTML(paste("Starting population size, N", paste(tags$sub(1), "(0):", sep=""), sep="")), 10),
-                           numericInput("LVC.pop1.r", label=HTML(paste("Intrinsic growth rate, r", paste(tags$sub(1), ":", sep=""), sep="")), .9, step=.1),
+                           numericInput("LVC.pop1.r", label=HTML(paste("Intrinsic growth rate, r", paste(tags$sub(1), ":", sep=""), sep="")), .9, step=.05),
                            numericInput("LVC.pop1.K", label=HTML(paste("Carrying capacity, K", paste(tags$sub(1), ":", sep=""), sep="")), 500),
-                           numericInput("LVC.alpha12", label=HTML(paste("Competition coefficient, alpha",paste(tags$sub(12), ":", sep=""),sep="")), .6, step=.1)
+                           numericInput("LVC.alpha12", label=HTML(paste("Competition coefficient, alpha",paste(tags$sub(12), ":", sep=""),sep="")), .6, step=.05)
                          )),
                          column(3, wellPanel(
                            h4("Population 2:"),
                            numericInput("LVC.pop2.n", label=HTML(paste("Starting population size, N", paste(tags$sub(2), "(0):", sep=""), sep="")), 20),
-                           numericInput("LVC.pop2.r", label=HTML(paste("Intrinsic growth rate, r", paste(tags$sub(2), ":", sep=""), sep="")), .5, step=.1),
+                           numericInput("LVC.pop2.r", label=HTML(paste("Intrinsic growth rate, r", paste(tags$sub(2), ":", sep=""), sep="")), .5, step=.05),
                            numericInput("LVC.pop2.K", label=HTML(paste("Carrying capacity, K", paste(tags$sub(2), ":", sep=""), sep="")), 700),
-                           numericInput("LVC.alpha21", label=HTML(paste("Competition coefficient, alpha",paste(tags$sub(21), ":", sep=""),sep="")), .7, step=.1)
+                           numericInput("LVC.alpha21", label=HTML(paste("Competition coefficient, alpha",paste(tags$sub(21), ":", sep=""),sep="")), .7, step=.05)
                          )),
                          column(3, wellPanel(
                            h4("Run time:"),
@@ -49,17 +49,17 @@ shinyUI(fluidPage(
                                               column(3, wellPanel(
                                                 h4("Population 1:"),
                                                 numericInput("DIG.pop1.n", label=HTML(paste("Starting population size, N", paste(tags$sub(1), "(0):", sep=""), sep="")), 10),
-                                                numericInput("DIG.pop1.r", label=HTML(paste("Intrinsic growth rate, r", paste(tags$sub(1), ":", sep=""), sep="")), .1)
+                                                numericInput("DIG.pop1.r", label=HTML(paste("Intrinsic growth rate, r", paste(tags$sub(1), ":", sep=""), sep="")), .1, step=.05)
                                               )),
                                               column(3, wellPanel(
                                                 h4("Population 2:"),
                                                 numericInput("DIG.pop2.n", label=HTML(paste("Starting population size, N", paste(tags$sub(2), "(0):", sep=""), sep="")), 10),
-                                                numericInput("DIG.pop2.r", label=HTML(paste("Intrinsic growth rate, r", paste(tags$sub(2), ":", sep=""), sep="")), .1)
+                                                numericInput("DIG.pop2.r", label=HTML(paste("Intrinsic growth rate, r", paste(tags$sub(2), ":", sep=""), sep="")), .1, step=.05)
                                               )),
                                               column(3, wellPanel(
                                                 h4("Population 3:"),
                                                 numericInput("DIG.pop3.n", label=HTML(paste("Starting population size, N", paste(tags$sub(3), "(0):", sep=""), sep="")), 10),
-                                                numericInput("DIG.pop3.r", label=HTML(paste("Intrinsic growth rate, r", paste(tags$sub(3), ":", sep=""), sep="")), .1)
+                                                numericInput("DIG.pop3.r", label=HTML(paste("Intrinsic growth rate, r", paste(tags$sub(3), ":", sep=""), sep="")), .1, step=.05)
                                               )),
                                               column(3, wellPanel(
                                                 h4("Run time:"),
@@ -87,19 +87,19 @@ shinyUI(fluidPage(
                                               column(3, wellPanel(
                                                 h4("Population 1:"),
                                                 numericInput("DDG.pop1.n", label=HTML(paste("Starting population size, N", paste(tags$sub(1), "(0):", sep=""), sep="")), 10),
-                                                numericInput("DDG.pop1.r", label=HTML(paste("Intrinsic growth rate, r", paste(tags$sub(1), ":", sep=""), sep="")), .1),
+                                                numericInput("DDG.pop1.r", label=HTML(paste("Intrinsic growth rate, r", paste(tags$sub(1), ":", sep=""), sep="")), .1, step=.05),
                                                 numericInput("DDG.pop1.K", label=HTML(paste("Carrying capacity, K", paste(tags$sub(1), ":", sep=""), sep="")), 250)
                                               )),
                                               column(3, wellPanel(
                                                 h4("Population 2:"),
                                                 numericInput("DDG.pop2.n", label=HTML(paste("Starting population size, N", paste(tags$sub(2), "(0):", sep=""), sep="")), 10),
-                                                numericInput("DDG.pop2.r", label=HTML(paste("Intrinsic growth rate, r", paste(tags$sub(2), ":", sep=""), sep="")), .1),
+                                                numericInput("DDG.pop2.r", label=HTML(paste("Intrinsic growth rate, r", paste(tags$sub(2), ":", sep=""), sep="")), .1, step=.05),
                                                 numericInput("DDG.pop2.K", label=HTML(paste("Carrying capacity, K", paste(tags$sub(2), ":", sep=""), sep="")), 250)
                                               )),
                                               column(3, wellPanel(
                                                 h4("Population 3:"),
                                                 numericInput("DDG.pop3.n", label=HTML(paste("Starting population size, N", paste(tags$sub(3), "(0):", sep=""), sep="")), 10),
-                                                numericInput("DDG.pop3.r", label=HTML(paste("Intrinsic growth rate, r", paste(tags$sub(3), ":", sep=""), sep="")), .1),
+                                                numericInput("DDG.pop3.r", label=HTML(paste("Intrinsic growth rate, r", paste(tags$sub(3), ":", sep=""), sep="")), .1, step=.05),
                                                 numericInput("DDG.pop3.K", label=HTML(paste("Carrying capacity, K", paste(tags$sub(3), ":", sep=""), sep="")), 250)
                                               )),
                                               column(3, wellPanel(
