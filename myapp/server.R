@@ -11,8 +11,8 @@ library(shiny) #this is the main package that allows for this web app to exist
 library(ggplot2) #this package makes the graphs
 library(tidyverse) #this package just helps us manipulate data in easy ways
 library(deSolve) #this package solves differential equations, and the population change equations are differential equations
-theme_set(theme_classic() + theme(legend.position="top", legend.direction = "horizontal"))
-colourblind_custom <- c("darkorange", "turquoise", "orangered", "blue")
+theme_set(theme_classic() + theme(legend.position="top", legend.direction = "horizontal")) # this sets the theme (look) for all ggplot graphs
+colourblind_custom <- c("darkorange", "turquoise", "orangered", "blue") # this creates a custom colorblindness-friendly palette for ggplot colors
 
 shinyServer(function(input, output) {
   output$LVC.plot <- renderPlot({
@@ -110,7 +110,7 @@ shinyServer(function(input, output) {
     DIGmod <- function(Time, State, Pars){
       with(as.list(c(State, Pars)), {
         dNdt = N*r
-        return(list(dNdt, State))
+        return(list(dNdt))
       })
     }
     DIG.dNdTvNplot <- ggplot()
